@@ -83,6 +83,7 @@ class Emailer {
 		$this->_HasAttachemnts = false;
 		$this->_SendUsing = "phpmail";
 		$this->RandHash = md5(date('r', time()));
+		$this->_SendUsing = "phpmail";
 	}
 	
 	/**
