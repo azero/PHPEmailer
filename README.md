@@ -1,14 +1,13 @@
-PHPEmailer
-==========
-Version: ALPHA
-
-A simple PHP class to send all types of emails from multiple sources.
-
+PHPEmailer<br>
+==========<br>
+<u>Version:</u> ALPHA<br>
+<br>
+A simple PHP class to send all types of emails using multiple methods.
+<br>
 Can send: HTML, Text, and Attachments
-
-Can send from: PHP Mail
-
-
-The Future:
--Add SMTP sending
+<br>
+Can send from: PHP Mail<br>
+<br>
+<b>The Future:</b><br>
+-Add SMTP sending<br>
 -Add support for multiple attachments

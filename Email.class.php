@@ -7,63 +7,75 @@
   * Created By: Andrew Burton
 **/
 
-class Emailer {
+class Emailer
+{
     
 	/**
 	  * @private
 	  * @var string
 	**/
 	private $_ReplyToEmail;
+	
 	/**
 	  * @private
 	  * @var string
 	**/
 	private $_SendFromEmail;
+	
 	/**
 	  * @private
 	  * @var string
 	**/
 	private $_SendToEmail;
+	
 	/**
 	  * @private
 	  * @var string
 	**/
 	private $_SendToName;
+	
 	/**
 	  * @private
 	  * @var string
 	**/
 	private $_SendSubject;
+	
 	/**
 	  * @private
 	  * @var string
 	**/
 	private $_SendBody;
+	
 	/**
 	  * @private
 	  * @var "plain" or "html"
 	**/
 	private $_SendType;
+	
 	/**
 	  * @private
 	  * @var "phpmail", "smtp", "gmail"
 	**/
 	private $_SendUsing;
+	
 	/**
 	  * @private
 	  * @var string
 	**/
 	private $_SendAttachment;
+	
 	/**
 	  * @private
 	  * @var array
 	**/
 	private $_SendErrors = array();
+	
 	/**
 	  * @private
 	  * @var bool
 	**/
 	private $_HasErrors;
+	
 	/**
 	  * @private
 	  * @var bool
@@ -77,12 +89,13 @@ class Emailer {
 	  * @private
 	  * Sets initial information.
 	**/
-	private function __construct() {
+	private function __construct()
+	{
 		$this->_SendType = "plain";
 		$this->_HasErrors = false;
 		$this->_HasAttachemnts = false;
 		$this->_SendUsing = "phpmail";
-		$this->RandHash = md5(date('r', time()));
+		$this->_RandHash = md5(date('r', time()));
 		$this->_SendUsing = "phpmail";
 	}
 	
@@ -92,7 +105,8 @@ class Emailer {
 	  * @string name
 	  * Sets To information.
 	**/
-	public function SetTo($email, $name = 'NONE') {
+	public function SetTo($email, $name = 'NONE')
+	{
 		if($name == 'NONE')
 			$this->_SendToName = $name;
 		$this->_SendToEmail = $email;
@@ -104,7 +118,8 @@ class Emailer {
 	  * @string name
 	  * Sets from information.
 	**/
-	public function SetFrom($email, $reply = 'NONE') {
+	public function SetFrom($email, $reply = 'NONE')
+	{
 		if($reply == 'NONE')
 			$this->_ReplyToEmail = $email;
 		else
@@ -117,7 +132,8 @@ class Emailer {
 	  * @string subj
 	  * Sets the subject of the email.
 	**/
-	public function SetSubject($subj) {
+	public function SetSubject($subj)
+	{
 		$this->_SendSubject = $subj;
 	}
 	
@@ -135,26 +151,43 @@ class Emailer {
 		$this->_SendBody = $body;
 	}
 	
-	public function SendMessage(){
-		if(strlen($this->_SendFromEmail)>0 && strlen($this->_ReplyToEmail)>0 && strlen($this->_SendToEmail)>0 && strlen($this->_SendToName)>0 && strlen($this->_SendSubject)>0 && strlen($this->_SendBody)>0) {
-			if($this->_SendType == "plain" && $this->_HasAttachemnts == false){
+	/**
+	  * Send a email message.
+	**/
+	public function SendMessage()
+	{
+		if(strlen($this->_SendFromEmail) > 0 && strlen($this->_ReplyToEmail) > 0 && strlen($this->_SendToEmail) > 0 && strlen($this->_SendToName) > 0 && strlen($this->_SendSubject) > 0 && strlen($this->_SendBody) > 0)
+		{
+			if($this->_SendType == "plain" && $this->_HasAttachemnts == false)
+			{
 				if($this->_SendUsing == "phpmail")
 					return $this->SendPlain(false);
-			}elseif($this->_SendType == "html" && $this->_HasAttachemnts == false){
+			}
+			elseif($this->_SendType == "html" && $this->_HasAttachemnts == false)
+			{
 				if($this->_SendUsing == "phpmail")
 					return $this->SendHTML(false);
 			}
-		}else{
+		}
+		else
+		{
 			$this->_HasErrors = true;
 			return false;
 		}
 	}
 	
-	private function SendPlain($attach) {
-		if($attach == true){
+	/**
+	  * Send a plain email.
+	**/
+	private function SendPlain($attach)
+	{
+		if($attach == true)
+		{
 			$headers = "From: ".$this->_SendFromEmail."\r\nReply-To: ".$this->_ReplyToEmail;
 			$headers .= "\r\nContent-Type: multipart/mixed; boundary=\"PHP-mixed-".$this->_RandHash."\"";
-		}else{
+		}
+		else
+		{
 			$headers = "From: ".$this->_SendFromEmail."\r\nReply-To: ".$this->_ReplyToEmail;
 		}
 		ob_start();
@@ -174,9 +207,14 @@ Content-Transfer-Encoding: 7bit
 			return false;
 	}
 	
-	private function SendHTML($attach) {
+	/**
+	  * Send a HTML email message.
+	**/
+	private function SendHTML($attach)
+	{
 		$headers = "From: ".$this->_SendFromEmail."\r\nReply-To: ".$this->_ReplyToEmail;
-		if($attach) {
+		if($attach)
+		{
 			$headers .= "\r\nContent-Type: multipart/alternative; boundary=\"PHP-alt-".$this->_RandHash."\"";
 			$attachment = chunk_split(base64_encode(file_get_contents($this->_SendAttachment)));
 			ob_start();
@@ -197,7 +235,9 @@ Content-Disposition: attachment
 --PHP-mixed-<?php echo $random_hash; ?>-- 
 		<?php
 			$message = ob_get_clean();
-		}else{
+		}
+		else
+		{
 			ob_start();
 		?>
 --PHP-alt-<?php echo $this->_RandHash; ?>  
@@ -218,9 +258,11 @@ Content-Transfer-Encoding: 7bit
 	
 }
 
-if(!function_exists('mime_content_type')) {
+if(!function_exists('mime_content_type'))
+{
 
-    function mime_content_type($filename) {
+    function mime_content_type($filename)
+	{
 
         $mime_types = array(
 
@@ -279,16 +321,19 @@ if(!function_exists('mime_content_type')) {
         );
 
         $ext = strtolower(array_pop(explode('.',$filename)));
-        if (array_key_exists($ext, $mime_types)) {
+        if (array_key_exists($ext, $mime_types))
+		{
             return $mime_types[$ext];
         }
-        elseif (function_exists('finfo_open')) {
+        elseif (function_exists('finfo_open'))
+		{
             $finfo = finfo_open(FILEINFO_MIME);
             $mimetype = finfo_file($finfo, $filename);
             finfo_close($finfo);
             return $mimetype;
         }
-        else {
+        else
+		{
             return 'application/octet-stream';
         }
     }
